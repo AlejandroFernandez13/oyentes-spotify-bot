@@ -77,6 +77,8 @@ Comandos disponibles:
 /peak_oyentes nombre
 /peak_posicion nombre
 /comparar artista1 vs artista2
+/quien numero
+/top numero
 
 Ejemplo:
 /artista bad bunny
