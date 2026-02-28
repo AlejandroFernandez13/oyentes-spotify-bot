@@ -186,7 +186,52 @@ async def peak_posicion(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("Artista no encontrado")
 
+async def quien(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Devuelve el artista que está en la posición indicada"""
+    if not context.args:
+        await update.message.reply_text("Usa: /quien [posición]")
+        return
 
+    try:
+        posicion_buscada = int(context.args[0])
+    except ValueError:
+        await update.message.reply_text("Debes escribir un número válido")
+        return
+
+    artistas = obtener_datos()
+    for artista in artistas.values():
+        if artista['posicion'].isdigit() and int(artista['posicion']) == posicion_buscada:
+            await update.message.reply_text(f"La posición {posicion_buscada} es {artista['nombre']}")
+            return
+
+    await update.message.reply_text(f"No se encontró ningún artista en la posición {posicion_buscada}")
+
+
+async def top(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Devuelve un top N de artistas"""
+    if not context.args:
+        await update.message.reply_text("Usa: /top [número]")
+        return
+
+    try:
+        n = int(context.args[0])
+    except ValueError:
+        await update.message.reply_text("Debes escribir un número válido")
+        return
+
+    artistas = obtener_datos()
+    # Ordenamos por posición
+    artistas_ordenados = sorted(
+        artistas.values(),
+        key=lambda x: int(x['posicion']) if x['posicion'].isdigit() else 999999
+    )
+
+    n = min(n, len(artistas_ordenados))
+    mensaje = ""
+    for i in range(n):
+        mensaje += f"{i+1}. {artistas_ordenados[i]['nombre']}\n"
+
+    await update.message.reply_text(mensaje)
 # ---------- MAIN ----------
 
 def main():
@@ -200,6 +245,8 @@ def main():
     app.add_handler(CommandHandler("cambio", cambio))
     app.add_handler(CommandHandler("peak_oyentes", peak_oyentes))
     app.add_handler(CommandHandler("peak_posicion", peak_posicion))
+    app.add_handler(CommandHandler("quien", quien))
+    app.add_handler(CommandHandler("top", top))
 
     print("Bot funcionando...")
     app.run_polling()
