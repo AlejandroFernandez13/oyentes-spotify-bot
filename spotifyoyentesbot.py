@@ -4,8 +4,9 @@ from rapidfuzz import process
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import time
+import os
 
-TOKEN = "8445409303:AAEwsPm6fLA7n7MyX1F1-rtlvRAMjDsCWXg"
+TOKEN = os.environ.get("TOKEN")
 URL = "https://kworb.net/spotify/listeners.html"
 
 # ---------- CACHE ----------
