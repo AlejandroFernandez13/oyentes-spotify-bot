@@ -23,7 +23,7 @@ def obtener_datos():
 
     urls = [
         "https://kworb.net/spotify/listeners.html",
-        "https://kworb.net/spotify/listeners_2.html"
+        "https://kworb.net/spotify/listeners2.html"  # <-- segunda página
     ]
 
     artistas = {}
@@ -77,18 +77,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 Comandos disponibles:
 
 /artista nombre
+/comparar artista1 vs artista2
 /posicion nombre
 /oyentes nombre
 /cambio nombre
 /peak_oyentes nombre
 /peak_posicion nombre
-/comparar artista1 vs artista2
 /quien numero
 /top numero
-
-Ejemplo:
-/artista bad bunny
-/comparar bad bunny vs drake
 """
     await update.message.reply_text(mensaje)
 
@@ -194,10 +190,10 @@ async def peak_posicion(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("Artista no encontrado")
 
+
 async def quien(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Devuelve el artista que está en la posición indicada"""
     if not context.args:
-        await update.message.reply_text("Usa: /quien [posición]")
+        await update.message.reply_text("Usa: /quien numero")
         return
 
     try:
@@ -206,19 +202,17 @@ async def quien(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Debes escribir un número válido")
         return
 
-    artistas = obtener_datos()
-    for artista in artistas.values():
+    for artista in obtener_datos().values():
         if artista['posicion'].isdigit() and int(artista['posicion']) == posicion_buscada:
             await update.message.reply_text(f"La posición {posicion_buscada} es {artista['nombre']}")
             return
 
-    await update.message.reply_text(f"No se encontró ningún artista en la posición {posicion_buscada}")
+    await update.message.reply_text("No encontrado")
 
 
 async def top(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Devuelve un top N de artistas"""
     if not context.args:
-        await update.message.reply_text("Usa: /top [número]")
+        await update.message.reply_text("Usa: /top numero")
         return
 
     try:
@@ -227,19 +221,18 @@ async def top(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Debes escribir un número válido")
         return
 
-    artistas = obtener_datos()
-    # Ordenamos por posición
-    artistas_ordenados = sorted(
-        artistas.values(),
+    artistas = sorted(
+        obtener_datos().values(),
         key=lambda x: int(x['posicion']) if x['posicion'].isdigit() else 999999
     )
 
-    n = min(n, len(artistas_ordenados))
     mensaje = ""
-    for i in range(n):
-        mensaje += f"{i+1}. {artistas_ordenados[i]['nombre']}\n"
+    for i in range(min(n, len(artistas))):
+        mensaje += f"{i+1}. {artistas[i]['nombre']}\n"
 
     await update.message.reply_text(mensaje)
+
+
 # ---------- MAIN ----------
 
 def main():
