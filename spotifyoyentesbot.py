@@ -21,32 +21,38 @@ def obtener_datos():
     if time.time() - ultima_actualizacion < CACHE_TIEMPO and cache_datos:
         return cache_datos
 
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    tabla = soup.find("table")
-    filas = tabla.find_all("tr")[1:]
+    urls = [
+        "https://kworb.net/spotify/listeners.html",
+        "https://kworb.net/spotify/listeners2.html"  # <-- segunda página
+    ]
 
     artistas = {}
 
-    for fila in filas:
-        columnas = fila.find_all("td")
-        if len(columnas) >= 6:
-            posicion = columnas[0].text.strip()
-            nombre = columnas[1].text.strip()
-            oyentes = columnas[2].text.strip()
-            cambio = columnas[3].text.strip()
-            peak_pos = columnas[4].text.strip()
-            peak_oyentes = columnas[5].text.strip()
+    for url in urls:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-            artistas[nombre.lower()] = {
-                "nombre": nombre,
-                "posicion": posicion,
-                "oyentes": oyentes,
-                "cambio": cambio,
-                "peak_pos": peak_pos,
-                "peak_oyentes": peak_oyentes
-            }
+        tabla = soup.find("table")
+        filas = tabla.find_all("tr")[1:]
+
+        for fila in filas:
+            columnas = fila.find_all("td")
+            if len(columnas) >= 6:
+                posicion = columnas[0].text.strip()
+                nombre = columnas[1].text.strip()
+                oyentes = columnas[2].text.strip()
+                cambio = columnas[3].text.strip()
+                peak_pos = columnas[4].text.strip()
+                peak_oyentes = columnas[5].text.strip()
+
+                artistas[nombre.lower()] = {
+                    "nombre": nombre,
+                    "posicion": posicion,
+                    "oyentes": oyentes,
+                    "cambio": cambio,
+                    "peak_pos": peak_pos,
+                    "peak_oyentes": peak_oyentes
+                }
 
     cache_datos = artistas
     ultima_actualizacion = time.time()
