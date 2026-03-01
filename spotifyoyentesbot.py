@@ -23,7 +23,7 @@ def obtener_datos():
 
     urls = [
         "https://kworb.net/spotify/listeners.html",
-        "https://kworb.net/spotify/listeners2.html"  # <-- segunda página
+        "https://kworb.net/spotify/listeners_2.html"
     ]
 
     artistas = {}
