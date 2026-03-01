@@ -233,7 +233,7 @@ async def top(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(mensaje)
 
 
-# ---------- MAIN ----------
+# ---------- MAIN -----------
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
