@@ -33,20 +33,19 @@ def obtener_datos():
     artistas = {}
 
     for url in urls:
-
         print("LEYENDO:", url)
-
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        tabla = soup.find("table")
-        filas = tabla.find_all("tr")[1:]
+        tablas = soup.find_all("table")
+        tabla = max(tablas, key=lambda t: len(t.find_all("tr")))  # tabla con más filas
+
+        filas = tabla.find_all("tr")[1:]  # saltamos el encabezado
 
         for fila in filas:
             columnas = fila.find_all("td")
 
             if len(columnas) >= 6:
-
                 posicion = columnas[0].text.strip()
                 nombre = columnas[1].text.strip()
                 oyentes = columnas[2].text.strip()
@@ -64,7 +63,6 @@ def obtener_datos():
                 }
 
     print("ARTISTAS CARGADOS:", len(artistas))
-
     cache_datos = artistas
     ultima_actualizacion = time.time()
 
