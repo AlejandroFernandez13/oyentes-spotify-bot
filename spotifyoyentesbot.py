@@ -64,7 +64,9 @@ def obtener_datos():
 
     cache_datos = artistas
     ultima_actualizacion = time.time()
+    print("ARTISTAS CARGADOS:", len(artistas))
 
+    
     return artistas
 
 def buscar_artista(nombre, artistas):
