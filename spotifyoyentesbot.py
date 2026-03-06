@@ -28,7 +28,8 @@ def obtener_datos():
 
     artistas = {}
 
-    for url in urls:
+    for pagina, url in enumerate(urls, start=1):
+
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -39,7 +40,13 @@ def obtener_datos():
             columnas = fila.find_all("td")
 
             if len(columnas) >= 6:
+
                 posicion = columnas[0].text.strip()
+
+                # ajustar posición según la página
+                if posicion.isdigit():
+                    posicion = str(int(posicion) + (pagina - 1) * 2500)
+
                 nombre = columnas[1].text.strip()
                 oyentes = columnas[2].text.strip()
                 cambio = columnas[3].text.strip()
