@@ -26,11 +26,17 @@ def obtener_datos():
         "https://kworb.net/spotify/listeners2.html"
     ]
 
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
     artistas = {}
 
-    for pagina, url in enumerate(urls, start=1):
+    for url in urls:
 
-        response = requests.get(url)
+        print("LEYENDO:", url)
+
+        response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
         tabla = soup.find("table")
@@ -42,11 +48,6 @@ def obtener_datos():
             if len(columnas) >= 6:
 
                 posicion = columnas[0].text.strip()
-
-                # ajustar posición según la página
-                if posicion.isdigit():
-                    posicion = str(int(posicion) + (pagina - 1) * 2500)
-
                 nombre = columnas[1].text.strip()
                 oyentes = columnas[2].text.strip()
                 cambio = columnas[3].text.strip()
@@ -62,11 +63,11 @@ def obtener_datos():
                     "peak_oyentes": peak_oyentes
                 }
 
-    cache_datos = artistas
-    ultima_actualizacion = time.time()
     print("ARTISTAS CARGADOS:", len(artistas))
 
-    
+    cache_datos = artistas
+    ultima_actualizacion = time.time()
+
     return artistas
 
 def buscar_artista(nombre, artistas):
