@@ -68,7 +68,7 @@ def buscar_artista(nombre, artistas):
     return None
 
 
-# ---------- COMANDOS ----------
+# ---------- COMANDOS -----------
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensaje = """
