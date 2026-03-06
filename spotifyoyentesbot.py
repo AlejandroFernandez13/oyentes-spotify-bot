@@ -23,7 +23,7 @@ def obtener_datos():
 
     urls = [
         "https://kworb.net/spotify/listeners.html",
-        "https://kworb.net/spotify/listeners2.html"  # <-- segunda página
+        "https://kworb.net/spotify/listeners2.html"
     ]
 
     artistas = {}
@@ -37,6 +37,7 @@ def obtener_datos():
 
         for fila in filas:
             columnas = fila.find_all("td")
+
             if len(columnas) >= 6:
                 posicion = columnas[0].text.strip()
                 nombre = columnas[1].text.strip()
@@ -58,7 +59,6 @@ def obtener_datos():
     ultima_actualizacion = time.time()
 
     return artistas
-
 
 def buscar_artista(nombre, artistas):
     nombres = list(artistas.keys())
